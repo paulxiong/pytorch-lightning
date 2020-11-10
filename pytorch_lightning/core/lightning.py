@@ -1223,20 +1223,26 @@ class LightningModule(
             model hook don't forget to add the call to it before ``optimizer.zero_grad()`` yourself.
 
         """
-        print(f"on_tpu = {on_tpu}")
+        print(f"boostx: on_tpu = {on_tpu}")
         if on_tpu:
             xm.optimizer_step(optimizer, optimizer_args={'closure': optimizer_closure})
         elif self.trainer.amp_backend == AMPType.NATIVE:
+            print(f"boostx:  AMPType.NATIVE")
+
             # native amp does not yet support closures.
             # TODO: pass the closure to the step ASAP
             optimizer_closure()
             self.trainer.scaler.step(optimizer)
         elif self.trainer.amp_backend == AMPType.APEX:
+            print(f"boostx:  AMPType.APEX")
+            
             # apex amp does not yet support closures.
             # TODO: pass the closure to the step ASAP
             optimizer_closure()
             optimizer.step()
         else:
+            print(f"boostx:  tpu ? else?")
+        
             optimizer.step(closure=optimizer_closure)
 
     def optimizer_zero_grad(
