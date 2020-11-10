@@ -1223,6 +1223,7 @@ class LightningModule(
             model hook don't forget to add the call to it before ``optimizer.zero_grad()`` yourself.
 
         """
+        print(f"on_tpu = {on_tpu}")
         if on_tpu:
             xm.optimizer_step(optimizer, optimizer_args={'closure': optimizer_closure})
         elif self.trainer.amp_backend == AMPType.NATIVE:
